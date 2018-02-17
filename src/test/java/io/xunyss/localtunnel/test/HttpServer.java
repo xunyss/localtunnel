@@ -39,13 +39,12 @@ public class HttpServer {
 		}
 	}
 	
-	// 이것은 한글 한글 한글.
 	static class ServerThread extends Thread {
-		private ServerSocket server;
+//		private ServerSocket server;
 		private Socket socket;
 		
 		ServerThread(ServerSocket server, Socket socket) {
-			this.server = server;
+//			this.server = server;
 			this.socket = socket;
 		}
 		
@@ -94,5 +93,5 @@ public class HttpServer {
 			"Content-Length: 78\r\n" + 
 			"Server: Jetty(9.2.z-SNAPSHOT)\r\n" + 
 			"\r\n" + 
-			"<ReleaseTicketResponse><responseCode>OK</responseCode></ReleaseTicketResponse>";
+			"OK";
 }

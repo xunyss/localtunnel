@@ -70,6 +70,10 @@ public class ProxyTask implements Runnable {
 				// read from remote-server
 				readLen = remoteSocket.getInputStream().read(buffer);
 				if (readLen == IOUtils.EOF) {
+					// remoteSocket.getInputStream().read(buffer) 문장은
+					// "ProxyTask-LocalForwarder" 스레드에서 IOUtils.closeQuietly(remoteSocket); 문장 수행 후에야 비로소 
+					// 'java.net.SocketException: Socket closed' 예외를 발생 시키며 종료 될 수 있을 것임
+					// 즉, remoteSocket.getInputStream().read(buffer) 가 '-1' 을 리턴하는 경우는 없을 것임.
 					break;
 				}
 				
@@ -153,6 +157,10 @@ public class ProxyTask implements Runnable {
 						// read from local-server
 						readLen = localSocket.getInputStream().read(buffer);
 						if (readLen == IOUtils.EOF) {
+							// 브라우저에서 localtunnel 서버로 요청시 header 에 'Connection: keep-alive' 설정해도
+							// localtunnel 서버에서 local-server 로 가는 http hreader 를 'Connection: close' 로 바꿈
+							// 즉, local-server 에서 받는 request 는 항상 'Connection: close' 이기 때문에, local-server 는 response 이후 connection 을 종료 할 것임
+							// 이 경우, localSocket.getInputStream().read(buffer) 는 '-1' 을 즉시 리턴 함.
 							break;
 						}
 						

@@ -13,18 +13,10 @@ public class HttpClient {
 	static Socket sock;
 	
 	public static void main(String[] args) throws Exception {
-//		sock = new Socket("localhost", 9797);
 		sock = SocketFactory.getDefault().createSocket("localhost", 9797);
 		
 		new Thread(new Tr()).start();
 		System.out.println();
-		
-//		Thread.sleep(1000);
-//		
-//		new Thread(new Tr()).start();
-//		System.out.println();
-		
-//		sock.close();
 	}
 	
 	private static void get() throws Exception {
@@ -60,10 +52,10 @@ public class HttpClient {
 		}
 	}
 	
-	static final String req = "GET http://localhost:9797/rpc/releaseTicket.action?buildNumber=2017.3.4+Build+IU-173.4548.28&clientVersion=5&hostName=xunyss-pc&machineId=9f4d8e8f-deba-4176-8984-10c35b94b373&productCode=49c202d4-ac56-452b-bb84-735056242fb3&productFamilyId=49c202d4-ac56-452b-bb84-735056242fb3&salt=1518007517127&secure=false&ticketId=1&userName=xunyss HTTP/1.1\r\n" + 
+	static final String req = "GET http://localhost:9797/ HTTP/1.1\r\n" + 
 			"Accept-Encoding: gzip\r\n" + 
 			"User-Agent: Java/1.8.0_152-release\r\n" + 
-			"Host: lcs.xunyss.io:81\r\n" + 
+			"Host: localhost:19797\r\n" + 
 			"Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2\r\n" + 
 		//	"Connection: keep-alive\r\n" +
 		//	"Connection: Close\r\n" +
