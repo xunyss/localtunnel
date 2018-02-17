@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>io.xunyss</groupId>
+		<artifactId>pom</artifactId>
+		<version>1.0.0-RELEASE</version>
+	</parent>
+	<groupId>io.xunyss.localtunnel</groupId>
+	<artifactId>localtunnel</artifactId>
+	<version>1.1.1-RELEASE</version>
+	<packaging>jar</packaging>
+	
+	<name>localtunnel</name>
+	<description>localtunnel</description>
+	
+	<properties>
+	</properties>
+	
+	<repositories>
+		<repository>
+			<id>github-commons-mvn-repo</id>
+			<url>https://raw.github.com/xunyss/commons/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<dependency>
+			<groupId>io.xunyss.commons</groupId>
+			<artifactId>commons-base</artifactId>
+			<version>0.9.1-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>
