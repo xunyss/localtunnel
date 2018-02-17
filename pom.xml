@@ -24,8 +24,8 @@
 	
 	<repositories>
 		<repository>
-			<id>github-commons-mvn-repo</id>
-			<url>https://raw.github.com/xunyss/commons/mvn-repo/</url>
+			<id>github-mvn-repo</id>
+			<url>https://raw.github.com/xunyss/pom/mvn-repo/</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
