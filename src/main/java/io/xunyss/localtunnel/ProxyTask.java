@@ -52,13 +52,25 @@ public class ProxyTask implements Runnable {
 		
 		// connect to remote-server
 		try {
-			connectRemote();
+			// 종종 remote 와 연결이 실패하는 경우 있음
+			// 한번 실패하면 영영 remote 로 접속 안됨
+			// TODO: re-try 구현 필요 - LocalTunnel.CONNECT_DELAY 활용
+			// TODO: 에러처리 필요 - errorConnectRemote, errorConnectLocal 추가 처리
+//			synchronized (this) {
+				try { Thread.sleep(10); } catch (Exception e) { e.printStackTrace(); }
+				//connectRemote();
+				Socket s = new Socket(remoteAddress.getHostName(), remoteAddress.getPort());
+				System.out.println("connected " + s);
+				/////////// 왜 sleep 1호 하면 remote 연결이 안되지
+				/////////// thread run runtimeexception 발생하면? > 스레드 비정상 종료 하겟지
+				/////////// synchronized (스레드객체) 스레드 객체에 접근하는게 block? 스레드 객체 자체 메소드는 수항하시나?
+//			}
 		}
 		// failed to connect remote-server
-		catch (IOException ex) {
+		catch (Exception ex) {
 			// send disconnect-remote signal
 			localTunnel.onDisconnectRemote(this);
-			
+			System.out.println(">>>>>>>>> " + ex.toString());
 			// stop current thread
 			return;
 		}
@@ -73,10 +85,14 @@ public class ProxyTask implements Runnable {
 					// remoteSocket.getInputStream().read(buffer) 문장은
 					// "ProxyTask-LocalForwarder" 스레드에서 IOUtils.closeQuietly(remoteSocket); 문장 수행 후에야 비로소 
 					// 'java.net.SocketException: Socket closed' 예외를 발생 시키며 종료 될 수 있을 것임
-					// 즉, remoteSocket.getInputStream().read(buffer) 가 '-1' 을 리턴하는 경우는 없을 것임.
+					// 즉, remoteSocket.getInputStream().read(buffer) 가 '-1' 을 리턴하는 경우는 없을 것임
 					break;
 				}
 				
+				// remote(local-tunnel) server 에서 요청이 들어와야만 local 로 connection 을 맺음
+				// 즉, idle 시 remote 와의 TCP connection 만 max_conn 수 만큼 생성된 상태로 있음
+				// TODO: 반면, 공식 제공되는 localtunnel-client 에서는 동일한 갯수만큼 local 과의 TCP connection 도 생성되어 있음
+				// TODO: 반드시 그렇게 local 과의 connection 을 미리 맺어놔야 하는지에 대해 확인 필요
 				if (!localHandling) {
 					localHandling = true;
 					connectLocal();		// connect to local-server
@@ -160,7 +176,7 @@ public class ProxyTask implements Runnable {
 							// 브라우저에서 localtunnel 서버로 요청시 header 에 'Connection: keep-alive' 설정해도
 							// localtunnel 서버에서 local-server 로 가는 http hreader 를 'Connection: close' 로 바꿈
 							// 즉, local-server 에서 받는 request 는 항상 'Connection: close' 이기 때문에, local-server 는 response 이후 connection 을 종료 할 것임
-							// 이 경우, localSocket.getInputStream().read(buffer) 는 '-1' 을 즉시 리턴 함.
+							// 이 경우, localSocket.getInputStream().read(buffer) 는 '-1' 을 즉시 리턴 함
 							break;
 						}
 						
@@ -188,5 +204,41 @@ public class ProxyTask implements Runnable {
 	public void destroy() {
 		IOUtils.closeQuietly(remoteSocket);
 		IOUtils.closeQuietly(localSocket);
+	}
+	
+	
+	
+	
+	
+	
+	
+	public static void main(String[] args) throws Exception {
+		System.out.println(Thread.currentThread().getName());
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				Socket sock = new Socket();
+				try { Thread.sleep(1); } catch (Exception e) { e.printStackTrace(); }
+				try {
+				sock.connect(new InetSocketAddress("localHost", 9797));
+				}
+				catch (Exception e) {e.printStackTrace();}
+				System.out.println("connected");
+				
+				int i = 10 / 0;
+				System.out.println(i);
+			}
+		};
+		t.start();
+		System.out.println(t.getName());
+		System.out.println(t.isAlive());
+		System.out.println(t.getState());
+		System.out.println("hello world");
+		Thread.sleep(2000);
+		System.out.println(t.isAlive());
+		System.out.println(t.isInterrupted());
+		System.out.println(t.getState());
+		Thread.sleep(2000);
+		System.out.println("end......");
 	}
 }

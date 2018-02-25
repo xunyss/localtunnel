@@ -17,10 +17,10 @@ public class LocalTunnelTest {
 		// create local-tunnel
 		localTunnel = LocalTunnelClient.getDefault().create(9797);
 		localTunnel.setMonitoringListener(getListener());
-		localTunnel.setMaxActive(2);
+		localTunnel.setMaxActive(1);
 		
 		// open local-tunnel
-		localTunnel.open("xunysslcs");
+		localTunnel.open();
 		
 		// remote details
 		RemoteDetails remoteDetails = localTunnel.getRemoteDetails();
@@ -36,7 +36,7 @@ public class LocalTunnelTest {
 		return new MonitoringListener() {
 			@Override
 			public void onExecuteProxyTask(long threadId) {
-				System.out.println("onExecuteProxyTask: " + threadId);
+//				System.out.println("onExecuteProxyTask: " + threadId);
 			}
 
 			@Override
@@ -59,10 +59,10 @@ public class LocalTunnelTest {
 				System.out.println("onDisconnectLocal: " + activeTaskCount);
 				
 				// stop tunnel
-				if (++handleCount > stopCount) {
-					System.out.println("stop http tunnel");
-					localTunnel.stop();
-				}
+//				if (++handleCount > stopCount) {
+//					System.out.println("stop http tunnel");
+//					localTunnel.stop();
+//				}
 			}
 		};
 	}

@@ -18,7 +18,7 @@ public class LocalTunnel {
 	/**
 	 * 
 	 */
-	private static final int CONNECT_DELAY = 200;	// 0.2 seconds
+	private static final int CONNECT_DELAY = 500;	// 0.5 seconds
 	
 	/**
 	 * 
