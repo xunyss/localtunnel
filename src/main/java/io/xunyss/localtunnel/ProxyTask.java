@@ -47,30 +47,22 @@ public class ProxyTask implements Runnable {
 	 */
 	@Override
 	public void run() {
-		// send connect-remote signal
-		localTunnel.onConnectRemote(this);
-		
 		// connect to remote-server
 		try {
 			// 종종 remote 와 연결이 실패하는 경우 있음
 			// 한번 실패하면 영영 remote 로 접속 안됨
 			// TODO: re-try 구현 필요 - LocalTunnel.CONNECT_DELAY 활용
 			// TODO: 에러처리 필요 - errorConnectRemote, errorConnectLocal 추가 처리
-//			synchronized (this) {
-				try { Thread.sleep(10); } catch (Exception e) { e.printStackTrace(); }
-				//connectRemote();
-				Socket s = new Socket(remoteAddress.getHostName(), remoteAddress.getPort());
-				System.out.println("connected " + s);
-				/////////// 왜 sleep 1호 하면 remote 연결이 안되지
-				/////////// thread run runtimeexception 발생하면? > 스레드 비정상 종료 하겟지
-				/////////// synchronized (스레드객체) 스레드 객체에 접근하는게 block? 스레드 객체 자체 메소드는 수항하시나?
-//			}
+			connectRemote();
+			
+			// send connect-remote signal
+			localTunnel.onConnectRemote(this);
 		}
 		// failed to connect remote-server
 		catch (Exception ex) {
 			// send disconnect-remote signal
 			localTunnel.onDisconnectRemote(this);
-			System.out.println(">>>>>>>>> " + ex.toString());
+			
 			// stop current thread
 			return;
 		}
@@ -204,41 +196,5 @@ public class ProxyTask implements Runnable {
 	public void destroy() {
 		IOUtils.closeQuietly(remoteSocket);
 		IOUtils.closeQuietly(localSocket);
-	}
-	
-	
-	
-	
-	
-	
-	
-	public static void main(String[] args) throws Exception {
-		System.out.println(Thread.currentThread().getName());
-		Thread t = new Thread() {
-			@Override
-			public void run() {
-				Socket sock = new Socket();
-				try { Thread.sleep(1); } catch (Exception e) { e.printStackTrace(); }
-				try {
-				sock.connect(new InetSocketAddress("localHost", 9797));
-				}
-				catch (Exception e) {e.printStackTrace();}
-				System.out.println("connected");
-				
-				int i = 10 / 0;
-				System.out.println(i);
-			}
-		};
-		t.start();
-		System.out.println(t.getName());
-		System.out.println(t.isAlive());
-		System.out.println(t.getState());
-		System.out.println("hello world");
-		Thread.sleep(2000);
-		System.out.println(t.isAlive());
-		System.out.println(t.isInterrupted());
-		System.out.println(t.getState());
-		Thread.sleep(2000);
-		System.out.println("end......");
 	}
 }

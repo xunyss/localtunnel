@@ -17,7 +17,7 @@ public class LocalTunnelTest {
 		// create local-tunnel
 		localTunnel = LocalTunnelClient.getDefault().create(9797);
 		localTunnel.setMonitoringListener(getListener());
-		localTunnel.setMaxActive(1);
+		localTunnel.setMaxActive(4);
 		
 		// open local-tunnel
 		localTunnel.open();

@@ -18,7 +18,7 @@ public class LocalTunnel {
 	/**
 	 * 
 	 */
-	private static final int CONNECT_DELAY = 500;	// 0.5 seconds
+	private static final int CONNECT_DELAY = 200;	// 0.2 seconds
 	
 	/**
 	 * 
@@ -135,6 +135,7 @@ public class LocalTunnel {
 //					synchronized (activeTaskCount) {
 //					(none multi-thread area)
 						if (activeTaskCount.get() < maxTaskCount) {
+							activeTaskCount.incrementAndGet();
 							executeProxyTask();
 						}
 //					}
@@ -200,7 +201,9 @@ public class LocalTunnel {
 	 */
 	void onConnectRemote(ProxyTask caller) {
 		synchronized (activeTaskCount) {
-			activeTaskCount.incrementAndGet();
+			// 2018.02.26 XUNYSS
+			// activeTaskCount 값은 executeProxyTask() 수행 직전 증가시키도록
+//			activeTaskCount.incrementAndGet();
 			proxyTaskList.add(caller);
 			
 			if (monitoringListener != null) {
