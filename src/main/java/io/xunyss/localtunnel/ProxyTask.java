@@ -51,8 +51,7 @@ public class ProxyTask implements Runnable {
 		try {
 			// 종종 remote 와 연결이 실패하는 경우 있음
 			// 한번 실패하면 영영 remote 로 접속 안됨
-			// TODO: re-try 구현 필요 - LocalTunnel.CONNECT_DELAY 활용
-			// TODO: 에러처리 필요 - errorConnectRemote, errorConnectLocal 추가 처리
+			// TODO: re-try 구현 필요
 			connectRemote();
 			
 			// send connect-remote signal
@@ -60,8 +59,8 @@ public class ProxyTask implements Runnable {
 		}
 		// failed to connect remote-server
 		catch (Exception ex) {
-			// send disconnect-remote signal
-			localTunnel.onDisconnectRemote(this);
+			// send error-remote signal
+			localTunnel.onErrorRemote(this, ex);
 			
 			// stop current thread
 			return;
@@ -87,8 +86,23 @@ public class ProxyTask implements Runnable {
 				// TODO: 반드시 그렇게 local 과의 connection 을 미리 맺어놔야 하는지에 대해 확인 필요
 				if (!localHandling) {
 					localHandling = true;
-					connectLocal();		// connect to local-server
-					forwardLocal();		// start stream pump from local to remote
+					try {
+						// connect to local-server
+						connectLocal();
+						
+						// send connect-local signal
+						localTunnel.onConnectLocal(this);
+					}
+					catch (Exception ex) {
+						// send error-local signal
+						localTunnel.onErrorLocal(this, ex);
+						
+						// stop current thread
+						destroy();
+						break;
+					}
+					// start stream pump from local to remote
+					forwardLocal();
 				}
 				
 				// write read data to local-server
@@ -155,9 +169,6 @@ public class ProxyTask implements Runnable {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				// send connect-local signal
-				localTunnel.onConnectLocal(ProxyTask.this);
-				
 				byte[] buffer = new byte[BUFFER_SIZE];
 				int readLen;
 				try {

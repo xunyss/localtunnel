@@ -17,7 +17,7 @@ public class LocalTunnelTest {
 		// create local-tunnel
 		localTunnel = LocalTunnelClient.getDefault().create(9797);
 		localTunnel.setMonitoringListener(getListener());
-		localTunnel.setMaxActive(4);
+//		localTunnel.setMaxActive(4);
 		
 		// open local-tunnel
 		localTunnel.open();
@@ -50,6 +50,11 @@ public class LocalTunnelTest {
 			}
 
 			@Override
+			public void onErrorRemote(int activeTaskCount) {
+				System.out.println("onErrorRemote: " + activeTaskCount);
+			}
+			
+			@Override
 			public void onConnectLocal(int activeTaskCount) {
 				System.out.println("onConnectLocal: " + activeTaskCount);
 			}
@@ -57,12 +62,16 @@ public class LocalTunnelTest {
 			@Override
 			public void onDisconnectLocal(int activeTaskCount) {
 				System.out.println("onDisconnectLocal: " + activeTaskCount);
-				
 				// stop tunnel
 //				if (++handleCount > stopCount) {
 //					System.out.println("stop http tunnel");
 //					localTunnel.stop();
 //				}
+			}
+
+			@Override
+			public void onErrorLocal(int activeTaskCount) {
+				System.out.println("onErrorLocal: " + activeTaskCount);
 			}
 		};
 	}

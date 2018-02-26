@@ -200,16 +200,18 @@ public class LocalTunnel {
 	 * @param caller
 	 */
 	void onConnectRemote(ProxyTask caller) {
-		synchronized (activeTaskCount) {
+//		synchronized (activeTaskCount) {
 			// 2018.02.26 XUNYSS
 			// activeTaskCount 값은 executeProxyTask() 수행 직전 증가시키도록
 //			activeTaskCount.incrementAndGet();
 			proxyTaskList.add(caller);
 			
 			if (monitoringListener != null) {
-				monitoringListener.onConnectRemote(activeTaskCount.get());
+				// activeTaskCount.get() 는 실제 연결된 connection 갯수보다 많을 수 있음
+//				monitoringListener.onConnectRemote(activeTaskCount.get());
+				monitoringListener.onConnectRemote(proxyTaskList.size());
 			}
-		}
+//		}
 	}
 	
 	/**
@@ -217,14 +219,33 @@ public class LocalTunnel {
 	 * @param caller
 	 */
 	void onDisconnectRemote(ProxyTask caller) {
-		synchronized (activeTaskCount) {
+//		synchronized (activeTaskCount) {
 			activeTaskCount.decrementAndGet();
 			proxyTaskList.remove(caller);
 			
 			if (monitoringListener != null) {
 				monitoringListener.onDisconnectRemote(activeTaskCount.get());
 			}
-		}
+//		}
+	}
+	
+	/**
+	 * 
+	 * @param caller
+	 * @param ex
+	 */
+	void onErrorRemote(ProxyTask caller, Exception ex) {
+//		synchronized (activeTaskCount) {
+			activeTaskCount.decrementAndGet();
+			proxyTaskList.remove(caller);	// always returns 'false'
+			
+			if (monitoringListener != null) {
+				monitoringListener.onErrorRemote(activeTaskCount.get());
+			}
+//		}
+		
+		// TODO: handle error
+		// ...
 	}
 	
 	/**
@@ -232,11 +253,11 @@ public class LocalTunnel {
 	 * @param caller
 	 */
 	void onConnectLocal(ProxyTask caller) {
-		synchronized (activeTaskCount) {
+//		synchronized (activeTaskCount) {
 			if (monitoringListener != null) {
 				monitoringListener.onConnectLocal(activeTaskCount.get());
 			}
-		}
+//		}
 	}
 	
 	/**
@@ -244,10 +265,23 @@ public class LocalTunnel {
 	 * @param caller
 	 */
 	void onDisconnectLocal(ProxyTask caller) {
-		synchronized (activeTaskCount) {
+//		synchronized (activeTaskCount) {
 			if (monitoringListener != null) {
 				monitoringListener.onDisconnectLocal(activeTaskCount.get());
 			}
-		}
+//		}
+	}
+	
+	/**
+	 * 
+	 * @param caller
+	 * @param ex
+	 */
+	void onErrorLocal(ProxyTask caller, Exception ex) {
+//		synchronized (activeTaskCount) {
+			if (monitoringListener != null) {
+				monitoringListener.onErrorLocal(activeTaskCount.get());
+			}
+//		}
 	}
 }

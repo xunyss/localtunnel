@@ -30,6 +30,12 @@ public interface MonitoringListener extends EventListener {
 	 * 
 	 * @param activeTaskCount
 	 */
+	void onErrorRemote(int activeTaskCount);
+	
+	/**
+	 * 
+	 * @param activeTaskCount
+	 */
 	void onConnectLocal(int activeTaskCount);
 	
 	/**
@@ -37,4 +43,10 @@ public interface MonitoringListener extends EventListener {
 	 * @param activeTaskCount
 	 */
 	void onDisconnectLocal(int activeTaskCount);
+	
+	/**
+	 * 
+	 * @param activeTaskCount
+	 */
+	void onErrorLocal(int activeTaskCount);
 }
