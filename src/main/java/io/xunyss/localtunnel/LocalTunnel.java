@@ -34,6 +34,7 @@ public class LocalTunnel {
 	private volatile boolean running = false;
 	private final List<ProxyTask> proxyTaskList = Collections.synchronizedList(new ArrayList<ProxyTask>());
 	private final AtomicInteger activeTaskCount = new AtomicInteger(0);
+	private RuntimeException occurException = null;
 	
 	private MonitoringListener monitoringListener = null;
 	
@@ -146,6 +147,9 @@ public class LocalTunnel {
 						break;
 					}
 				}
+				if (occurException != null) {
+					throw occurException;
+				}
 			}
 		}, "LocalTunnel");
 		
@@ -174,6 +178,7 @@ public class LocalTunnel {
 			// activeTaskCount --> "0"
 			// proxyTaskList --> "empty"
 			// 로 초기화 될 것임
+			// TODO: 제대로 초기화 되었는지 재확인 할 필요 있을 듯
 		}
 	}
 	
@@ -252,8 +257,11 @@ public class LocalTunnel {
 			}
 //		}
 		
-		// TODO: handle error
-		// ...
+		// handle error
+		// retry 에도 불구하고 remote 로의 접속이 실패한 경우
+		// stop() 이후 tunnelThread 에서 RuntimeException 발생 유도
+		occurException = new IllegalStateException("Failed to connect LocalTunnel-Remote", ex);
+		stop();
 	}
 	
 	/**

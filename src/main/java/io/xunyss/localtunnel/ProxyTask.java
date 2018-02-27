@@ -18,6 +18,9 @@ public class ProxyTask implements Runnable {
 	 */
 	private static final int BUFFER_SIZE = 512;
 	
+	private static final int CONNECT_RETRY = 2;
+	private static final int RETRY_DELAY = 1000 * 3;
+	
 	
 	private final LocalTunnel localTunnel;
 	
@@ -49,10 +52,35 @@ public class ProxyTask implements Runnable {
 	public void run() {
 		// connect to remote-server
 		try {
+			// 2018.02.27 XUNYSS
 			// 종종 remote 와 연결이 실패하는 경우 있음
-			// 한번 실패하면 영영 remote 로 접속 안됨
-			// TODO: re-try 구현 필요
-			connectRemote();
+			// 대부분의 경우 한번 실패하면 영영 remote 로 접속 안됨
+			// re-try 2회 (total 3회)
+			// re-try 대시기간 3초
+			// connect 를 시도하는 도중 LocalTunnel.executeProxyTask 메소드 실행으로
+			// 다른 스레드가 remote 로 접속을 시도 하지 못하도록 동기화 (--> 제외)
+			//--------------------------------------------------------------------------------------
+//			connectRemote();
+//			synchronized (localTunnel) {
+				for (int retryCount = 0; ; retryCount++) {
+					try {
+						connectRemote();
+						break;
+					}
+					catch (Exception ex) {
+						if (retryCount >= CONNECT_RETRY) {
+							throw ex;
+						}
+						try {
+							Thread.sleep(RETRY_DELAY);
+						}
+						catch (InterruptedException interruptEx) {
+							throw interruptEx;
+						}
+					}
+				}
+//			}
+			//--------------------------------------------------------------------------------------
 			
 			// send connect-remote signal
 			localTunnel.onConnectRemote(this);
