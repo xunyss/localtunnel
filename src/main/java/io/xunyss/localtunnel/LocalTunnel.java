@@ -179,6 +179,14 @@ public class LocalTunnel {
 	
 	/**
 	 * 
+	 * @return
+	 */
+	public boolean isRunning() {
+		return running;
+	}
+	
+	/**
+	 * 
 	 */
 	private void executeProxyTask() {
 		Thread proxyTaskThread = new Thread(
