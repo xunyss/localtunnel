@@ -18,6 +18,11 @@ import io.xunyss.commons.net.TrustAllCerts;
  */
 public class LocalTunnelClient {
 	
+	//----------------------------------------------------------------------------------------------
+	// https://localtunnel.me
+	// https://github.com/localtunnel
+	//----------------------------------------------------------------------------------------------
+	
 	private static final LocalTunnelClient DEFAULT_CLIENT = new LocalTunnelClient();
 	
 	private static final String DEFAULT_ENDPOINT = "https://localtunnel.me" + "/";
