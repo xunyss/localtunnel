@@ -149,6 +149,8 @@ public class LocalTunnel {
 				}
 				if (occurException != null) {
 					throw occurException;
+					// FIXME error handler 를 등록하여 사용할 수 있도록 기능 추가할것
+					// FIXME ideax/XL 실행시 localtunnel 에서 에러 발생시 lcServer 도 stop 시켜야 함
 				}
 			}
 		}, "LocalTunnel");
