@@ -37,7 +37,7 @@ public class LocalTunnel {
 	private RuntimeException occurException = null;
 	
 	private MonitoringListener monitoringListener = null;
-	
+	private Thread.UncaughtExceptionHandler tunnelErrorHandler = null;
 	
 	/**
 	 * 
@@ -59,6 +59,17 @@ public class LocalTunnel {
 			throw new IllegalStateException("Tunnel is already running");
 		}
 		this.monitoringListener = monitoringListener;
+	}
+	
+	/**
+	 *
+	 * @param tunnelErrorHandler
+	 */
+	public void setTunnelErrorHandler(Thread.UncaughtExceptionHandler tunnelErrorHandler) {
+		if (running) {
+			throw new IllegalStateException("Tunnel is already running");
+		}
+		this.tunnelErrorHandler = tunnelErrorHandler;
 	}
 	
 	/**
@@ -148,12 +159,17 @@ public class LocalTunnel {
 					}
 				}
 				if (occurException != null) {
+					// call tunnelErrorHandler.uncaughtException()
 					throw occurException;
-					// FIXME error handler 를 등록하여 사용할 수 있도록 기능 추가할것
-					// FIXME ideax/XL 실행시 localtunnel 에서 에러 발생시 lcServer 도 stop 시켜야 함
 				}
 			}
 		}, "LocalTunnel");
+		
+		// 2018.03.17 XUNYSS
+		// tunnel thread exception handler
+		if (tunnelErrorHandler != null) {
+			tunnelThread.setUncaughtExceptionHandler(tunnelErrorHandler);
+		}
 		
 		// start tunnel thread
 		tunnelThread.start();
