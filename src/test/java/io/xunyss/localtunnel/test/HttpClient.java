@@ -1,11 +1,11 @@
 package io.xunyss.localtunnel.test;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-
 import javax.net.SocketFactory;
 
 public class HttpClient {
@@ -26,18 +26,45 @@ public class HttpClient {
 		
 		out.write(req.getBytes());
 		out.flush();
-		
-		boolean loop = true;
-		while (loop) {
-			if (inr.ready()) {
-				int i = 0;
-				while (i != -1) {
-					i = inr.read();
-					System.out.print((char) i);
+
+		//-- test1. write 하고 close 함
+//		Thread.sleep(2000);
+//		if (true) {
+////			in.close();
+////			out.close();
+//			sock.shutdownInput();
+//			sock.shutdownOutput();
+//			sock.close();
+//			return;
+//		}
+		//----
+
+		//-- test2. 서버에서 close
+		while (true) {
+			try {
+				int read = in.read();
+				System.out.println("read: " + read);
+				if (read == -1) {
+					System.err.println("read returns.... EOF");
+					break;
 				}
-				loop = false;
 			}
-		}		
+			catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+
+//		boolean loop = true;
+//		while (loop) {
+//			if (inr.ready()) {
+//				int i = 0;
+//				while (i != -1) {
+//					i = inr.read();
+//					System.out.print((char) i);
+//				}
+//				loop = false;
+//			}
+//		}
 	}
 	
 	static class Tr implements Runnable {

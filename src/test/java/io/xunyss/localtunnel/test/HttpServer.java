@@ -16,7 +16,7 @@ public class HttpServer {
 		ServerSocket server = null;
 		
 		try {
-			server = new ServerSocket(19797);
+			server = new ServerSocket(9797);
 			while (true) {
 				Socket socket = server.accept();
 				
@@ -64,14 +64,21 @@ public class HttpServer {
 					tname = Thread.currentThread().getName();
 					System.out.println("[" + tname + "] " + line);
 					
-//					if ("".equals(line)) {	// end of http get
-//						System.out.println(">> end of http request.");
+					if ("".equals(line)) {	// end of http get
+						System.out.println(">> end of http request.");
 //						out.write(res);
 //						out.flush();
-//					}
+
+						//-- test2. 서버가 socket close
+						out.write("A");
+						out.flush();
+						socket.close();
+						break;
+						//----
+					}
 				}
-				out.write(res);
-				out.flush();
+//				out.write(res);
+//				out.flush();
 			}
 			catch (IOException ioe) {
 				ioe.printStackTrace();
