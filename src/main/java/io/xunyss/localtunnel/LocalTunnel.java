@@ -139,7 +139,7 @@ public class LocalTunnel {
 			throw new IllegalStateException("Tunnel is not opened");
 		}
 		
-		// create tunnel thread
+		// create a tunnel thread
 		tunnelThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
