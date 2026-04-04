@@ -1,11 +1,11 @@
 package io.xunyss.localtunnel.test;
 
+import javax.net.SocketFactory;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import javax.net.SocketFactory;
 
 public class HttpClient {
 

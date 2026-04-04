@@ -6,11 +6,6 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	
-	<parent>
-		<groupId>io.xunyss.poms</groupId>
-		<artifactId>poms</artifactId>
-		<version>1</version>
-	</parent>
 	<groupId>io.xunyss.localtunnel</groupId>
 	<artifactId>localtunnel</artifactId>
 	<version>1.0.0-RELEASE</version>
@@ -18,7 +13,7 @@
 	
 	<name>localtunnel</name>
 	<description>localtunnel</description>
-	
+
 	<properties>
 	</properties>
 	
@@ -40,5 +35,36 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.12.0</version>
+				<executions>
+					<execution>
+						<id>attach-javadoc</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.4.0</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

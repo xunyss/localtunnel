@@ -3,7 +3,6 @@ package io.xunyss.localtunnel.test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -13,30 +12,25 @@ public class HttpServer {
 	static boolean stop = false;
 
 	public static void main(String[] args) throws IOException {
-		ServerSocket server = null;
 
-		try {
-			server = new ServerSocket(9797);
-			while (true) {
-				Socket socket = server.accept();
+        try (ServerSocket server = new ServerSocket(9797)) {
+            while (true) {
+                Socket socket = server.accept();
 
-				System.out.println(socket.getInetAddress() + " connected.");
+                System.out.println(socket.getInetAddress() + " connected.");
 
-				ServerThread thread = new ServerThread(server, socket);
-				thread.start();
-			}
-		}
+                ServerThread thread = new ServerThread(server, socket);
+                thread.start();
+            }
+        }
 		catch (SocketException se) {
-			if (stop) {
-				System.out.println("server stop.");
-			}
+            if (stop) {
+                System.out.println("server stop.");
+            }
 			else {
-				throw se;
-			}
-		}
-		finally {
-			server.close();
-		}
+                throw se;
+            }
+        }
 	}
 
 	static class ServerThread extends Thread {

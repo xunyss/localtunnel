@@ -1,11 +1,11 @@
 package io.xunyss.localtunnel;
 
+import io.xunyss.commons.io.IOUtils;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-
-import io.xunyss.commons.io.IOUtils;
 
 /**
  * 

@@ -1,13 +1,13 @@
 package io.xunyss.localtunnel;
 
+import io.xunyss.localtunnel.monitor.MonitoringListener;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import io.xunyss.localtunnel.monitor.MonitoringListener;
 
 /**
  * 
@@ -32,7 +32,7 @@ public class LocalTunnel {
 	
 	private Thread tunnelThread = null;
 	private volatile boolean running = false;
-	private final List<ProxyTask> proxyTaskList = Collections.synchronizedList(new ArrayList<ProxyTask>());
+	private final List<ProxyTask> proxyTaskList = Collections.synchronizedList(new ArrayList<>());
 	private final AtomicInteger activeTaskCount = new AtomicInteger(0);
 	private RuntimeException occurException = null;
 	
@@ -165,7 +165,7 @@ public class LocalTunnel {
 			}
 		}, "LocalTunnel");
 		
-		// 2018.03.17 XUNYSS
+		// 2018.03.17.
 		// tunnel thread exception handler
 		if (tunnelErrorHandler != null) {
 			tunnelThread.setUncaughtExceptionHandler(tunnelErrorHandler);
@@ -232,7 +232,7 @@ public class LocalTunnel {
 	 */
 	void onConnectRemote(ProxyTask caller) {
 //		synchronized (activeTaskCount) {
-			// 2018.02.26 XUNYSS
+			// 2018.02.26.
 			// activeTaskCount 값은 executeProxyTask() 수행 직전 증가시키도록
 //			activeTaskCount.incrementAndGet();
 			proxyTaskList.add(caller);
